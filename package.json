@@ -39,6 +39,23 @@
         "command": "dans-extension.helloWorld",
         "title": "Hello World from dans-extension"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dans-extension",
+          "title": "DansExtension",
+          "icon": "assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "dans-extension": [
+        {
+          "id": "translation-explorer",
+          "name": "TranslationExplorer"
+        }
+      ]
+    }
   }
 }

@@ -1,14 +1,14 @@
+import { TranslationExplorerProvider } from './translation-explorer-provider';
 import {
   CompletionItem,
   CompletionItemKind,
   ExtensionContext,
   languages,
+  window,
 } from 'vscode';
-
 export async function activateTranslations(context: ExtensionContext) {
   const translationResponse = await fetch('https://translate-api.deno.dev');
   const translations = await translationResponse.json();
-
   context.subscriptions.push(
     languages.registerCompletionItemProvider(
       ['typescript', 'typescriptreact'],
@@ -25,6 +25,16 @@ export async function activateTranslations(context: ExtensionContext) {
           }
         },
       }
+    )
+  );
+
+  const res = await fetch('https://translate-api.deno.dev?nested=true');
+  const translationsNested = await res.json();
+
+  context.subscriptions.push(
+    window.registerTreeDataProvider(
+      'translation-explorer',
+      new TranslationExplorerProvider(translationsNested)
     )
   );
 }
