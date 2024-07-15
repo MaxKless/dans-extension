@@ -1,0 +1,80 @@
+
+	{
+		"wearedevs-autocomplete": {
+			"prefix": "auto",
+			"body": [
+				"const translationResponse = await fetch('https://translate-api.deno.dev');",
+				"  const translations = await translationResponse.json();",
+				"",
+				"  context.subscriptions.push(",
+				"    languages.registerCompletionItemProvider(",
+				"      ['typescript', 'typescriptreact'],",
+				"      {",
+				"        provideCompletionItems(document, position, token, context) {",
+				"          const line = document.lineAt(position).text;",
+				"          const preCursorText = line.substring(0, position.character);",
+				"          const match = preCursorText.match(/translate\\(\\s*['\"]*([^'\",)]*)$/);",
+				"          if (match) {",
+				"            const completionItems = Object.keys(translations).map(",
+				"              (key) => new CompletionItem(key, CompletionItemKind.Text)",
+				"            );",
+				"            return completionItems;",
+				"          }",
+				"        },",
+				"      }",
+				"    )",
+				"  );"
+			],
+			"description": "description for wearedevs-autocomplete"
+		},
+		"wearedevs-explorer": {
+			"prefix": "explorer",
+			"body": [
+				"constructor(private translations: Record<string, Record<string, string>>) {}",
+				"",
+				"  getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {",
+				"    return element;",
+				"  }",
+				"",
+				"  getChildren(element?: TreeItem): ProviderResult<TreeItem[]> {",
+				"    if (!element) {",
+				"      return Object.keys(this.translations).map((key) => {",
+				"        const treeItem = new TreeItem(key, TreeItemCollapsibleState.Collapsed);",
+				"        treeItem.contextValue = 'category';",
+				"        treeItem.iconPath = new ThemeIcon('folder');",
+				"        return treeItem;",
+				"      });",
+				"    }",
+				"",
+				"    if (element.contextValue === 'category') {",
+				"      const categoryName = element.label.toString();",
+				"      const keys = Object.keys(this.translations[categoryName]);",
+				"      return keys.map((key) => {",
+				"        const treeItem = new TreeItem(key, TreeItemCollapsibleState.Collapsed);",
+				"        treeItem.contextValue = categoryName;",
+				"        treeItem.iconPath = new ThemeIcon('key');",
+				"        return treeItem;",
+				"      });",
+				"    }",
+				"",
+				"    const categoryName = element.contextValue;",
+				"    const key = element.label.toString();",
+				"    return [",
+				"      new TreeItem(",
+				"        this.translations[categoryName][key],",
+				"        TreeItemCollapsibleState.None",
+				"      ),",
+				"    ];",
+				"  }"
+			],
+			"description": "explorer"
+		},
+		"wearedevs-fetch": {
+			"prefix": "fetch",
+			"body": [
+				"const res = await fetch('https://translate-api.deno.dev?nested=true');",
+				"  const translationsNested = await res.json();"
+			],
+			"description": "description for wearedevs-fetch"
+		}
+	}
